@@ -1,5 +1,8 @@
 #!/bin/bash
 
+current_branch=`git rev-parse --abbrev-ref HEAD`
+current_commit=`git rev-parse --verify HEAD`
+
 while read -u 3 result
 do
   printf "\n"
@@ -12,7 +15,11 @@ do
 
 done 3< <(git log --pretty=oneline | cut -f1 -d" " | tac )
 
-read -n 1 -s -r -p "Press any key to checkout master" some_response
+read -n 1 -s -r -p "Press any key to where it all began" some_response
 printf "\n"
 
-git checkout master | awk -F 'delim'\n\n'{print $1}'
+if [ "$current_branch" == "HEAD" ]; then
+  git checkout $current_commit | awk -F 'delim'\n\n'{print $1}'
+else
+  git checkout $current_branch | awk -F 'delim'\n\n'{print $1}'
+fi
